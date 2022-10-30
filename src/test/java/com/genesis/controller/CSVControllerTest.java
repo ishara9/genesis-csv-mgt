@@ -1,18 +1,20 @@
 package com.genesis.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.genesis.dto.MedDTO;
+import com.genesis.dto.RecordDto;
 import com.genesis.service.impl.CSVServiceImpl;
+import java.io.FileInputStream;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,8 +22,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,91 +30,69 @@ import org.springframework.web.multipart.MultipartFile;
 class CSVControllerTest {
 
   @Autowired
-  private MockMvc mockMvc;
+  private MockMvc mvc;
 
   @MockBean
-  private CSVServiceImpl medsService;
+  private CSVServiceImpl csvService;
 
+  @Test
+  public void uploadFile_success() throws Exception {
+    FileInputStream csvStream = new FileInputStream("src/main/resources/exercise.csv");
+    MultipartFile multipartFile = new MockMultipartFile("exercise.csv", csvStream);
 
-//  @Test
-//  void getMeds() throws Exception {
-//    MultipartFile multipartFile = new MockMultipartFile("exercise.csv", "Hello World".getBytes());
-//
-//    File file = new File("src/main/resources/targetFile.tmp");
-//
-//    multipartFile.transferTo(file);
-//
-//    assertThat(FileUtils.readFileToString(new File("src/main/resources/targetFile.tmp"), "UTF-8"))
-//        .isEqualTo("Hello World");
-//  }
-//
-//  @Test
-//  void getMed() throws Exception {
-//    MedDTO mockMed = new MedDTO(1L, "name", "mail@mail.com", "1x2i3e");
-//    Mockito.when(medsService.getMed(anyLong())).thenReturn(mockMed);
-//
-//    RequestBuilder requestBuilder = MockMvcRequestBuilders.get(
-//        "/meds/api/v2/meds/1").accept(
-//        MediaType.APPLICATION_JSON);
-//
-//    MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-//
-//    String expected = "{\"name\":\"name\",\"email\":\"mail@mail.com\",\"id\":1}";
-//
-//    JSONAssert.assertEquals(expected, result.getResponse()
-//        .getContentAsString(), false);
-//  }
-//
-//  @Test
-//  void addMeds() throws Exception {
-//    doNothing().when(medsService).createMeds(anyList());
-//    String input = "[{\"name\":\"name\",\"email\":\"mail@mail.com\",\"medId\":1}]";
-//    RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/meds/api/v2/meds")
-//        .content(input)
-//        .contentType(MediaType.APPLICATION_JSON)
-//        .accept(MediaType.APPLICATION_JSON);
-//
-//    MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-//
-//    assertEquals(201, result.getResponse().getStatus());
-//  }
-//
-//  @Test
-//  void updateMed() throws Exception {
-//    doNothing().when(medsService).updateMed(any(MedDTO.class), anyLong());
-//    String input = "{\"name\":\"name\",\"email\":\"mail@mail.com\",\"medId\":1}";
-//    RequestBuilder requestBuilder = MockMvcRequestBuilders.put("/meds/api/v2/meds/1")
-//        .content(input)
-//        .contentType(MediaType.APPLICATION_JSON)
-//        .accept(MediaType.APPLICATION_JSON);
-//
-//    MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-//
-//    assertEquals(200, result.getResponse().getStatus());
-//  }
-//
-//  @Test
-//  void updatePatchMed() throws Exception {
-//    doNothing().when(medsService).updateMed(any(MedDTO.class), anyLong());
-//    String input = "{\"name\": \"M-16\" }";
-//    RequestBuilder requestBuilder = MockMvcRequestBuilders.patch("/meds/api/v2/meds/1")
-//        .content(input)
-//        .contentType(MediaType.APPLICATION_JSON)
-//        .accept(MediaType.APPLICATION_JSON);
-//
-//    MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-//
-//    assertEquals(200, result.getResponse().getStatus());
-//  }
-//
-//  @Test
-//  void deleteMed() throws Exception {
-//    doNothing().when(medsService).updateMed(any(MedDTO.class), anyLong());
-//    RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/meds/api/v2/meds/1")
-//        .accept(MediaType.APPLICATION_JSON);
-//
-//    MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-//
-//    assertEquals(200, result.getResponse().getStatus());
-//  }
+    mvc.perform(MockMvcRequestBuilders.post("/genesis/api/v1/csv")
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .content(multipartFile.getBytes()))
+        .andExpect(status().isCreated());
+  }
+
+  @Test
+  public void getRecordById_success() throws Exception {
+
+    String recordId = "12345";
+    RecordDto record = buildDummyRecord(recordId);
+    given(csvService.getRecordById(anyString())).willReturn(record);
+
+    mvc.perform((MockMvcRequestBuilders.get("/genesis/api/v1/csv/records/" + recordId)))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.code").value(recordId))
+        .andExpect(jsonPath("$.source").value(record.getSource()))
+        .andExpect(jsonPath("$.codeListCode").value(record.getCodeListCode()))
+        .andExpect(jsonPath("$.displayValue").value(record.getDisplayValue()))
+        .andExpect(jsonPath("$.longDescription").value(record.getDisplayValue()))
+        .andExpect(jsonPath("$.fromDate").value(record.getDisplayValue()))
+        .andExpect(jsonPath("$.toDate").value(record.getDisplayValue()))
+        .andExpect(jsonPath("$.sortingPriority").value(record.getSortingPriority()));
+  }
+
+  @Test
+  public void getAllRecords_success() throws Exception {
+
+    String recordId = "12345";
+    RecordDto record = buildDummyRecord(recordId);
+    List<RecordDto> records = new ArrayList<>();
+    records.add(record);
+    given(csvService.getAllRecords(anyInt(), anyInt())).willReturn(records);
+
+    mvc.perform((MockMvcRequestBuilders.get("/genesis/api/v1/csv/records")))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$").isArray())
+        .andExpect(jsonPath("$[0].code").value(recordId));
+  }
+
+  private RecordDto buildDummyRecord(String id) {
+
+    return RecordDto.builder()
+        .code(id)
+        .source("ZIB")
+        .codeListCode("ZIB001")
+        .displayValue("Polsslag regelmatig")
+        .longDescription("The long description is necessary")
+        .fromDate(new Date(System.currentTimeMillis()))
+        .toDate(new Date(System.currentTimeMillis()))
+        .sortingPriority(1L)
+        .build();
+  }
 }

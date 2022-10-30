@@ -2,6 +2,7 @@ package com.genesis.service.impl;
 
 import com.genesis.dto.RecordDto;
 import com.genesis.exception.ClientRequestException;
+import com.genesis.exception.ServerRequestException;
 import com.genesis.model.Record;
 import com.genesis.repository.CSVRepository;
 import com.genesis.service.CSVService;
@@ -19,6 +20,7 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,8 +49,11 @@ public class CSVServiceImpl implements CSVService {
     List<Record> recordList = StreamSupport.stream(records.spliterator(), false)
         .map(RecordMapper::map)
         .collect(Collectors.toList());
-    csvRepository.saveAll(recordList);
-
+    try {
+      csvRepository.saveAll(recordList);
+    } catch (DataAccessException dEx) {
+      throw new ServerRequestException("Error while saving data", dEx);
+    }
   }
 
   @Override
@@ -72,11 +77,23 @@ public class CSVServiceImpl implements CSVService {
 
   @Override
   public void deleteRecordById(String id) {
-
+    boolean isValidId = csvRepository.existsById(id);
+    if (!isValidId) {
+      throw new ClientRequestException("Invalid record id.");
+    }
+    try {
+      csvRepository.deleteById(id);
+    } catch (DataAccessException dEx) {
+      throw new ServerRequestException("Error while deleting data", dEx);
+    }
   }
 
   @Override
   public void deleteAllRecords() {
-
+    try {
+      csvRepository.deleteAll();
+    } catch (DataAccessException dEx) {
+      throw new ServerRequestException("Error while deleting data", dEx);
+    }
   }
 }

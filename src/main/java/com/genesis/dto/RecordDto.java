@@ -21,4 +21,5 @@ public class RecordDto {
     private Date fromDate;
     private Date toDate;
     private Long sortingPriority;
+    private String codeListCode;
 }

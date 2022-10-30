@@ -28,7 +28,7 @@
 
     upload CSV file with key: file, value: exercise,csv
 
-## Get a record
+## Fetch by code
 
 ### request
 
@@ -36,7 +36,7 @@
 
     curl -i -H 'Accept: application/json' http://localhost:8080/genesis/api/v1/csv/records/1
 
-## Get all records
+## Fetch all data
 
 ### request
 
@@ -44,39 +44,21 @@
 
     curl -i -H 'Accept: application/json' http://localhost:8080/genesis/api/v1/csv/records
 
-## Update a genesis
+## Delete by record id
+
+### request 
+
+`DELETE /genesis/records/{recordId}`
+
+    http://localhost:8080/genesis/api/v1/csv/records/1
+
+## Delete all
 
 ### request
 
-`PUT /genesis/records/{medId}`
+`DELETE /genesis/records`
 
-    http://localhost:8080/genesis/api/v1/records/1
-
-    {
-        "medId": 1,
-        "name": "Ak47b",
-        "email": "mail@gmail.com"    
-    }
-
-## Delete a record
-
-### request
-
-`DELETE /genesis/records/{medId}`
-
-    http://localhost:8080/genesis/api/v1/records/2
-
-## Partial update a record
-
-### request
-
-`PATCH /genesis/records/{medId}`
-
-    http://localhost:8080/genesis/api/v1/records/1
-
-    {
-        "name": "M-16"    
-    }
+    http://localhost:8080/genesis/api/v1/csv/records
 
 
 
