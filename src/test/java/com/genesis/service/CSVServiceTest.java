@@ -1,22 +1,19 @@
 package com.genesis.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.atMostOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.genesis.dto.MedDTO;
 import com.genesis.model.Record;
 import com.genesis.repository.CSVRepository;
 import com.genesis.service.impl.CSVServiceImpl;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Spy;
@@ -26,55 +23,43 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+@DataJpaTest
 class CSVServiceTest {
 
   private CSVService csvService;
 
-//  @MockBean
-//  private CSVRepository CSVRepository;
+  @MockBean
+  private CSVRepository csvRepository;
 
   @Spy
   ModelMapper modelMapper;
 
-//  @BeforeEach
-//  void setUp() {
-//    csvService = new CSVServiceImpl(CSVRepository, modelMapper);
-//  }
-
-//  @AfterEach
-//  void tearDown() {
-//    csvService.deleteAll();
-//  }
+  @BeforeEach
+  void setUp() {
+    csvService = new CSVServiceImpl(csvRepository, modelMapper);
+  }
 
   @Test
-  void getMeds_whenAtLeastOneMedAvailable_returnMed() throws IOException {
-    MultipartFile multipartFile = new MockMultipartFile("exercise.csv", "Hello World".getBytes());
-
-    File file = new File("src/main/resources/exercise.csv");
-
+  void upload() throws IOException {
+    MultipartFile multipartFile = new MockMultipartFile("exercise.csv", "Sample csv".getBytes());
+    File file = new File("src/main/resources/sample.csv");
     multipartFile.transferTo(file);
-
     csvService.upload(multipartFile);
+    verify(csvRepository, atLeastOnce()).saveAll(anyList());
   }
-//
-//  @Test
-//  void getMed_whenAMedIsThere_getThatMed() {
-//    Record record = new Record(1L, "name", "email@mail.com", "1x3i3t");
-//    when(CSVRepository.findAll()).thenReturn(List.of(record));
-//    Assertions.assertEquals("name", CSVService.getMed(1L).getName());
-//  }
-//
-//  @Test
-//  void createMeds_whenMedIsAvailable_shouldCreateAMed() {
-//    MedDTO medDTO = new MedDTO(1L, "name", "email@mail.com", "1x3i3t");
-//    CSVService.createMeds(List.of(medDTO));
-//    verify(CSVRepository, atMostOnce()).saveAll(anyList());
-//  }
-//
-//  @Test()
-//  void deleteMedById_whenMedIsDeleted_calledDeleteMethodAtLeastOnce() {
-//    CSVService.deleteMedById(1L);
-//    verify(CSVRepository, atLeastOnce()).deleteById(any());
-//  }
+
+  @Test
+  void getRecordById() throws IOException {
+    Optional<Record> optionalRecord = Optional.of(Record.builder().code("Type 1").build());
+    when(csvRepository.findById(anyString())).thenReturn(optionalRecord);
+    assertEquals("Type 1", csvService.getRecordById("Type 1").getCode());
+  }
+
+  @Test
+  void getRecords() throws IOException {
+    Optional<Record> optionalRecord = Optional.of(new Record());
+    when(csvRepository.findAll()).thenReturn(List.of(Record.builder().code("Type 1").build()));
+    assertEquals("Type 1", csvService.getAllRecords(20, 0).get(0).getCode());
+  }
 
 }

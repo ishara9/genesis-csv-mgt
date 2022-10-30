@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -51,12 +53,21 @@ public class CSVServiceImpl implements CSVService {
 
   @Override
   public RecordDto getRecordById(String recordId) {
-    return null;
+
+    Optional<Record> optionalRecord = csvRepository.findById(recordId);
+    if (optionalRecord.isPresent()) {
+      Record record = optionalRecord.get();
+      return modelMapper.map(record, RecordDto.class);
+    }
+    throw new ClientRequestException("Invalid recordId");
   }
 
   @Override
   public List<RecordDto> getAllRecords(int limit, int offset) {
-    return null;
+    //TODO implement pageable logic
+    List<Record> records = csvRepository.findAll();
+    return modelMapper.map(records, new TypeToken<List<RecordDto>>() {
+    }.getType());
   }
 
   @Override

@@ -31,30 +31,39 @@ public class CSVController {
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
-  @GetMapping(path = "record/{recordId}")
+  @GetMapping(path = "records/{recordId}")
     ResponseEntity<RecordDto> getRecordById(@PathVariable String recordId) {
     RecordDto record = csvService.getRecordById(recordId);
     return new ResponseEntity<>(record, HttpStatus.OK);
   }
 
-  @GetMapping(path = "record")
+  @GetMapping(path = "records")
   ResponseEntity<List<RecordDto>> getAllRecords(
           @RequestParam(value = "limit", required = false) Integer limit,
           @RequestParam(value = "offset", required = false) Integer offset) {
     // Sanitize pagination params.
-    limit = (20 < limit) || (limit < 1) ? 20 : limit;
-    offset = 0 > offset ? 0 : offset;
+    if (limit != null) {
+      limit = (20 < limit) || (limit < 1) ? 20 : limit;
+    } else {
+      limit = 20;
+    }
+    if (offset != null) {
+      offset = 0 > offset ? 0 : offset;
+    } else {
+      offset = 0;
+    }
+
     List<RecordDto> records = csvService.getAllRecords(limit, offset);
     return new ResponseEntity<>(records, HttpStatus.OK);
   }
 
-  @DeleteMapping(path = "record/{recordId}")
+  @DeleteMapping(path = "records/{recordId}")
   ResponseEntity<Void> deleteRecordById(@PathVariable String recordId) {
     csvService.deleteRecordById(recordId);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
-  @DeleteMapping(path = "record")
+  @DeleteMapping(path = "records")
   ResponseEntity<Void> deleteAllRecords() {
     csvService.deleteAllRecords();
     return new ResponseEntity<>(HttpStatus.OK);

@@ -1,4 +1,4 @@
-# Meds Rest APIs
+# Genesis Rest APIs
 
 ### Swagger
     
@@ -22,38 +22,27 @@
 
 ### request
 
-`POST /genesis/records`
+`POST /genesis/api/v1/csv`
 
-    http://localhost:8080/genesis/api/v1/records
+    http://localhost:8080/genesis/api/v1/csv
 
-    [
-        {
-            "medId": 1,
-            "name": "Ak47",
-            "email": "mail@gmail.com"        
-        },
-        {
-            "medId": 2,
-            "name": "Ak47f",
-            "email": "mail@gmail.com"       
-        }
-    ]
+    upload CSV file with key: file, value: exercise,csv
 
 ## Get a record
 
 ### request
 
-`GET /genesis/records/{medId}`
+`GET /genesis/records/{code}`
 
-    curl -i -H 'Accept: application/json' http://localhost:8080/genesis/api/v1/records/1
+    curl -i -H 'Accept: application/json' http://localhost:8080/genesis/api/v1/csv/records/1
 
 ## Get all records
 
 ### request
 
-`GET /genesis/records`
+`GET genesis/api/v1/csv/records`
 
-    curl -i -H 'Accept: application/json' http://localhost:8080/record/api/v1/records
+    curl -i -H 'Accept: application/json' http://localhost:8080/genesis/api/v1/csv/records
 
 ## Update a genesis
 
