@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class CSVController {
 
   private final CSVService CSVService;
+  private final CSVServiceImpl medsService;
 
   @PostMapping()
   public ResponseEntity<Void> uploadFile(@RequestParam("file") MultipartFile file) {
@@ -34,36 +35,36 @@ public class CSVController {
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
-  private final CSVServiceImpl medsService;
 
-  @GetMapping
-  ResponseEntity<List<MedDTO>> getMeds() {
-    return new ResponseEntity<>(CSVService.getMeds(), HttpStatus.OK);
-  }
-
-  @GetMapping(path = "{medId}")
-  ResponseEntity<MedDTO> getMed(@PathVariable Long medId) {
-    return new ResponseEntity<>(CSVService.getMed(medId), HttpStatus.OK);
-  }
-
-
-
-  @PutMapping(path = "{medId}")
-  ResponseEntity<Void> updateMed(@RequestBody MedDTO MedDTO, @PathVariable Long medId) {
-    CSVService.updateMed(MedDTO, medId);
-    return new ResponseEntity<>(HttpStatus.OK);
-  }
-
-  @PatchMapping(path = "{medId}")
-  ResponseEntity<Void> updatePatchMed(@RequestBody MedDTO partialMedDTO,
-      @PathVariable Long medId) {
-    CSVService.updatePartialMed(partialMedDTO, medId);
-    return new ResponseEntity<>(HttpStatus.OK);
-  }
-
-  @DeleteMapping(path = "{medId}")
-  ResponseEntity<Void> deleteMed(@PathVariable Long medId) {
-    CSVService.deleteMedById(medId);
-    return new ResponseEntity<>(HttpStatus.OK);
-  }
+//
+//  @GetMapping
+//  ResponseEntity<List<MedDTO>> getMeds() {
+//    return new ResponseEntity<>(CSVService.getMeds(), HttpStatus.OK);
+//  }
+//
+//  @GetMapping(path = "{medId}")
+//  ResponseEntity<MedDTO> getMed(@PathVariable Long medId) {
+//    return new ResponseEntity<>(CSVService.getMed(medId), HttpStatus.OK);
+//  }
+//
+//
+//
+//  @PutMapping(path = "{medId}")
+//  ResponseEntity<Void> updateMed(@RequestBody MedDTO MedDTO, @PathVariable Long medId) {
+//    CSVService.updateMed(MedDTO, medId);
+//    return new ResponseEntity<>(HttpStatus.OK);
+//  }
+//
+//  @PatchMapping(path = "{medId}")
+//  ResponseEntity<Void> updatePatchMed(@RequestBody MedDTO partialMedDTO,
+//      @PathVariable Long medId) {
+//    CSVService.updatePartialMed(partialMedDTO, medId);
+//    return new ResponseEntity<>(HttpStatus.OK);
+//  }
+//
+//  @DeleteMapping(path = "{medId}")
+//  ResponseEntity<Void> deleteMed(@PathVariable Long medId) {
+//    CSVService.deleteMedById(medId);
+//    return new ResponseEntity<>(HttpStatus.OK);
+//  }
 }
