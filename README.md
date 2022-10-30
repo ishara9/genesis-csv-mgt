@@ -26,7 +26,9 @@
 
     http://localhost:8080/genesis/api/v1/csv
 
-    upload CSV file with key: file, value: exercise,csv
+    upload CSV file with 
+    [key: "file", value: exercise.csv]
+![img.png](img.png)
 
 ## Fetch by code
 

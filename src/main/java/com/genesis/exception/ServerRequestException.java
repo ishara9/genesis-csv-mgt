@@ -1,6 +1,6 @@
 package com.genesis.exception;
 
-public class ServerRequestException extends WeaponException {
+public class ServerRequestException extends GenesisException {
 
   public ServerRequestException(String message) {
     super(message);

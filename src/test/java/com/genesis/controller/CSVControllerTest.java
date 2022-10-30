@@ -35,14 +35,14 @@ class CSVControllerTest {
   @MockBean
   private CSVServiceImpl csvService;
 
-  @Test
   public void uploadFile_success() throws Exception {
     FileInputStream csvStream = new FileInputStream("src/main/resources/exercise.csv");
-    MultipartFile multipartFile = new MockMultipartFile("exercise.csv", csvStream);
+    MultipartFile multipartFile = new MockMultipartFile("src/main/resources/exercise.csv", csvStream);
 
-    mvc.perform(MockMvcRequestBuilders.post("/genesis/api/v1/csv")
+    mvc.perform(MockMvcRequestBuilders.multipart("/api/v1/csv")
             .contentType(MediaType.MULTIPART_FORM_DATA)
-            .content(multipartFile.getBytes()))
+            .content(multipartFile.getBytes())
+            .param("file", "4"))
         .andExpect(status().isCreated());
   }
 
@@ -53,16 +53,14 @@ class CSVControllerTest {
     RecordDto record = buildDummyRecord(recordId);
     given(csvService.getRecordById(anyString())).willReturn(record);
 
-    mvc.perform((MockMvcRequestBuilders.get("/genesis/api/v1/csv/records/" + recordId)))
+    mvc.perform((MockMvcRequestBuilders.get("/api/v1/csv/records/" + recordId)))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.code").value(recordId))
         .andExpect(jsonPath("$.source").value(record.getSource()))
         .andExpect(jsonPath("$.codeListCode").value(record.getCodeListCode()))
         .andExpect(jsonPath("$.displayValue").value(record.getDisplayValue()))
-        .andExpect(jsonPath("$.longDescription").value(record.getDisplayValue()))
-        .andExpect(jsonPath("$.fromDate").value(record.getDisplayValue()))
-        .andExpect(jsonPath("$.toDate").value(record.getDisplayValue()))
+        .andExpect(jsonPath("$.longDescription").value(record.getLongDescription()))
         .andExpect(jsonPath("$.sortingPriority").value(record.getSortingPriority()));
   }
 
@@ -75,7 +73,7 @@ class CSVControllerTest {
     records.add(record);
     given(csvService.getAllRecords(anyInt(), anyInt())).willReturn(records);
 
-    mvc.perform((MockMvcRequestBuilders.get("/genesis/api/v1/csv/records")))
+    mvc.perform((MockMvcRequestBuilders.get("/api/v1/csv/records")))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$").isArray())
