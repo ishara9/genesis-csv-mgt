@@ -1,11 +1,14 @@
 package com.genesis.service.impl;
 
+import com.genesis.dto.RecordDto;
 import com.genesis.exception.ClientRequestException;
 import com.genesis.repository.CSVRepository;
 import com.genesis.service.CSVService;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
@@ -43,6 +46,26 @@ public class CSVServiceImpl implements CSVService {
       String source = record.get("source");
       String code = record.get("code");
     }
+
+  }
+
+  @Override
+  public RecordDto getRecordById(String recordId) {
+    return null;
+  }
+
+  @Override
+  public List<RecordDto> getAllRecords(int limit, int offset) {
+    return null;
+  }
+
+  @Override
+  public void deleteRecordById(String id) {
+
+  }
+
+  @Override
+  public void deleteAllRecords() {
 
   }
 }

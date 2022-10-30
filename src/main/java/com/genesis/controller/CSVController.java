@@ -1,24 +1,21 @@
 package com.genesis.controller;
 
-import com.genesis.dto.MedDTO;
+import com.genesis.dto.RecordDto;
 import com.genesis.service.CSVService;
-import com.genesis.service.impl.CSVServiceImpl;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RequestMapping(path = "api/v1/csv")
 @RestController
@@ -26,45 +23,40 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class CSVController {
 
-  private final CSVService CSVService;
-  private final CSVServiceImpl medsService;
+  private final CSVService csvService;
 
   @PostMapping()
   public ResponseEntity<Void> uploadFile(@RequestParam("file") MultipartFile file) {
-    CSVService.upload(file);
+    csvService.upload(file);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
+  @GetMapping(path = "record/{recordId}")
+    ResponseEntity<RecordDto> getRecordById(@PathVariable String recordId) {
+    RecordDto record = csvService.getRecordById(recordId);
+    return new ResponseEntity<>(record, HttpStatus.OK);
+  }
 
-//
-//  @GetMapping
-//  ResponseEntity<List<MedDTO>> getMeds() {
-//    return new ResponseEntity<>(CSVService.getMeds(), HttpStatus.OK);
-//  }
-//
-//  @GetMapping(path = "{medId}")
-//  ResponseEntity<MedDTO> getMed(@PathVariable Long medId) {
-//    return new ResponseEntity<>(CSVService.getMed(medId), HttpStatus.OK);
-//  }
-//
-//
-//
-//  @PutMapping(path = "{medId}")
-//  ResponseEntity<Void> updateMed(@RequestBody MedDTO MedDTO, @PathVariable Long medId) {
-//    CSVService.updateMed(MedDTO, medId);
-//    return new ResponseEntity<>(HttpStatus.OK);
-//  }
-//
-//  @PatchMapping(path = "{medId}")
-//  ResponseEntity<Void> updatePatchMed(@RequestBody MedDTO partialMedDTO,
-//      @PathVariable Long medId) {
-//    CSVService.updatePartialMed(partialMedDTO, medId);
-//    return new ResponseEntity<>(HttpStatus.OK);
-//  }
-//
-//  @DeleteMapping(path = "{medId}")
-//  ResponseEntity<Void> deleteMed(@PathVariable Long medId) {
-//    CSVService.deleteMedById(medId);
-//    return new ResponseEntity<>(HttpStatus.OK);
-//  }
+  @GetMapping(path = "record")
+  ResponseEntity<List<RecordDto>> getAllRecords(
+          @RequestParam(value = "limit", required = false) Integer limit,
+          @RequestParam(value = "offset", required = false) Integer offset) {
+    // Sanitize pagination params.
+    limit = (20 < limit) || (limit < 1) ? 20 : limit;
+    offset = 0 > offset ? 0 : offset;
+    List<RecordDto> records = csvService.getAllRecords(limit, offset);
+    return new ResponseEntity<>(records, HttpStatus.OK);
+  }
+
+  @DeleteMapping(path = "record/{recordId}")
+  ResponseEntity<Void> deleteRecordById(@PathVariable String recordId) {
+    csvService.deleteRecordById(recordId);
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @DeleteMapping(path = "record")
+  ResponseEntity<Void> deleteAllRecords() {
+    csvService.deleteAllRecords();
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
 }

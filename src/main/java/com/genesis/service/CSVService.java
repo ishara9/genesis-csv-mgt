@@ -1,63 +1,48 @@
 package com.genesis.service;
 
-import com.genesis.dto.MedDTO;
-import java.io.IOException;
-import java.util.List;
-import javax.transaction.Transactional;
+import com.genesis.dto.RecordDto;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
+/**
+ * This interface defines methods to handle CSV records.
+ */
 public interface CSVService {
 
-//  /**
-//   * Get All meds
-//   *
-//   * @return
-//   */
-//  List<MedDTO> getMeds();
-//
-//  /**
-//   * Get a med by Id
-//   *
-//   * @param medId
-//   * @return
-//   */
-//  MedDTO getMed(Long medId);
-//
-//  /**
-//   * Add new set of meds
-//   *
-//   * @param meds
-//   */
-//  void createMeds(List<MedDTO> meds);
-//
-//  /**
-//   * Delete a med by Id
-//   *
-//   * @param medId
-//   */
-//  void deleteMedById(Long medId);
-//
-//  /**
-//   * Update a med by Id
-//   *
-//   * @param med
-//   * @param medId
-//   */
-//  @Transactional
-//  void updateMed(MedDTO med, Long medId);
-//
-//  /**
-//   * Add a patch to a med
-//   *
-//   * @param medDTO
-//   * @param medId
-//   */
-//  @Transactional
-//  void updatePartialMed(MedDTO medDTO, Long medId);
-
   /**
-   * Upload csv file
-   * @param file
+   * Upload csv file.
+   *
+   * @param file        CSV file.
    */
   void upload(MultipartFile file);
+
+  /**
+   * Fetch single record by id.
+   *
+   * @param recordId    Unique record code.
+   * @return
+   */
+  RecordDto getRecordById(String recordId);
+
+  /**
+   * Get all records with pagination.
+   *
+   * @param limit       Records to return.
+   * @param offset      Records to skip.
+   * @return
+   */
+  List<RecordDto> getAllRecords(int limit, int offset);
+
+  /**
+   * Delete single record by id.
+   *
+   * @param id          Unique record code.
+   */
+  void deleteRecordById(String id);
+
+  /**
+   * Delete all records.
+   */
+  void deleteAllRecords();
 }
