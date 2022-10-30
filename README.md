@@ -1,16 +1,16 @@
 # Meds Rest APIs
 
 ### Swagger
-
-     http://localhost:8080/record/swagger-ui.html
+    
+     http://localhost:8080/genesis/swagger-ui.html
 
 ### Actuator
 
-    http://localhost:8080/record/actuator
+    http://localhost:8080/genesis/actuator
 
 ### H2 Database console
 
-    http://localhost:8080/record/h2
+    http://localhost:8080/genesis/h2
 
 ## Run application
 
@@ -22,9 +22,9 @@
 
 ### request
 
-`POST /record/records`
+`POST /genesis/records`
 
-    http://localhost:8080/record/api/v1/records
+    http://localhost:8080/genesis/api/v1/records
 
     [
         {
@@ -43,25 +43,25 @@
 
 ### request
 
-`GET /record/records/{medId}`
+`GET /genesis/records/{medId}`
 
-    curl -i -H 'Accept: application/json' http://localhost:8080/record/api/v1/records/1
+    curl -i -H 'Accept: application/json' http://localhost:8080/genesis/api/v1/records/1
 
 ## Get all records
 
 ### request
 
-`GET /record/records`
+`GET /genesis/records`
 
     curl -i -H 'Accept: application/json' http://localhost:8080/record/api/v1/records
 
-## Update a record
+## Update a genesis
 
 ### request
 
-`PUT /record/records/{medId}`
+`PUT /genesis/records/{medId}`
 
-    http://localhost:8080/record/api/v1/records/1
+    http://localhost:8080/genesis/api/v1/records/1
 
     {
         "medId": 1,
@@ -73,17 +73,17 @@
 
 ### request
 
-`DELETE /record/records/{medId}`
+`DELETE /genesis/records/{medId}`
 
-    http://localhost:8080/record/api/v1/records/2
+    http://localhost:8080/genesis/api/v1/records/2
 
 ## Partial update a record
 
 ### request
 
-`PATCH /record/records/{medId}`
+`PATCH /genesis/records/{medId}`
 
-    http://localhost:8080/record/api/v1/records/1
+    http://localhost:8080/genesis/api/v1/records/1
 
     {
         "name": "M-16"    

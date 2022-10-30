@@ -2,13 +2,16 @@ package com.genesis.service.impl;
 
 import com.genesis.dto.RecordDto;
 import com.genesis.exception.ClientRequestException;
+import com.genesis.model.Record;
 import com.genesis.repository.CSVRepository;
 import com.genesis.service.CSVService;
+import com.genesis.util.RecordMapper;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
-
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
@@ -28,7 +31,6 @@ public class CSVServiceImpl implements CSVService {
   @Override
   public void upload(MultipartFile file) {
 
-
     Reader reader = null;
     Iterable<CSVRecord> records;
     try {
@@ -40,12 +42,10 @@ public class CSVServiceImpl implements CSVService {
       throw new ClientRequestException(e.getMessage(), e);
     }
 
-
-
-    for (CSVRecord record : records) {
-      String source = record.get("source");
-      String code = record.get("code");
-    }
+    List<Record> recordList = StreamSupport.stream(records.spliterator(), false)
+        .map(RecordMapper::map)
+        .collect(Collectors.toList());
+    csvRepository.saveAll(recordList);
 
   }
 

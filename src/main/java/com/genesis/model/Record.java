@@ -6,12 +6,18 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
 @Table(name = "RECORD")
 @AllArgsConstructor
 @ToString
+@NoArgsConstructor
+@Data
+@Builder
 public class Record {
 
   @Id
@@ -35,5 +41,8 @@ public class Record {
 
   @Column(name = "SORTING_PRIORITY")
   private Long sortingPriority;
+
+  @Column(name = "CODE_LIST_CODE")
+  private String codeListCode;
 
 }
