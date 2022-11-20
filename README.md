@@ -1,5 +1,8 @@
 # Genesis Rest APIs
 
+### Switching property files
+    * --spring.profiles.active=dev
+ 
 ### Swagger
     
      http://localhost:8080/genesis/swagger-ui.html

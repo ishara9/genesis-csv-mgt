@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 import com.genesis.model.Record;
 import com.genesis.repository.CSVRepository;
 import com.genesis.service.impl.CSVServiceImpl;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -42,8 +41,8 @@ class CSVServiceTest {
   @Test
   void upload() throws IOException {
     MultipartFile multipartFile = new MockMultipartFile("exercise.csv", "Sample csv".getBytes());
-    File file = new File("src/main/resources/sample.csv");
-    multipartFile.transferTo(file);
+//    File file = new File("src/main/resources/sample.csv");
+//    multipartFile.transferTo(file);
     csvService.upload(multipartFile);
     verify(csvRepository, atLeastOnce()).saveAll(anyList());
   }

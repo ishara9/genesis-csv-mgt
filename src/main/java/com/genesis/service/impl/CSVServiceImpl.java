@@ -6,6 +6,7 @@ import com.genesis.exception.ServerRequestException;
 import com.genesis.model.Record;
 import com.genesis.repository.CSVRepository;
 import com.genesis.service.CSVService;
+import com.genesis.util.CustomPagealbe;
 import com.genesis.util.RecordMapper;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,10 +18,12 @@ import java.util.stream.StreamSupport;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVFormat.Builder;
 import org.apache.commons.csv.CSVRecord;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,12 +42,15 @@ public class CSVServiceImpl implements CSVService {
     Iterable<CSVRecord> records;
     try {
       reader = new InputStreamReader(file.getInputStream());
-      records = CSVFormat.DEFAULT
-          .withFirstRecordAsHeader()
+      records = Builder.create(CSVFormat.DEFAULT)
+          .setHeader()
+          .setSkipHeaderRecord(true)
+          .build()
           .parse(reader);
     } catch (IOException e) {
       throw new ClientRequestException(e.getMessage(), e);
     }
+
 
     List<Record> recordList = StreamSupport.stream(records.spliterator(), false)
         .map(RecordMapper::map)
@@ -70,8 +76,12 @@ public class CSVServiceImpl implements CSVService {
   @Override
   public List<RecordDto> getAllRecords(int limit, int offset) {
     //TODO implement pageable logic
-    List<Record> records = csvRepository.findAll();
-    return modelMapper.map(records, new TypeToken<List<RecordDto>>() {
+    CustomPagealbe paging = new CustomPagealbe(offset, limit);
+//    Pageable paging = PageRequest.of(offset, limit);
+    Page<Record> records = csvRepository.findAll(paging);
+    List<Record> recordList = StreamSupport.stream(records.spliterator(), false).toList();
+//    List<Record> records = csvRepository.findAll();
+    return modelMapper.map(recordList, new TypeToken<List<RecordDto>>() {
     }.getType());
   }
 
