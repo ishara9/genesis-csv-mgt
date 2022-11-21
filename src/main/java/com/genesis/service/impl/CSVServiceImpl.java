@@ -38,10 +38,9 @@ public class CSVServiceImpl implements CSVService {
   @Override
   public void upload(MultipartFile file) {
 
-    Reader reader = null;
     Iterable<CSVRecord> records;
     try {
-      reader = new InputStreamReader(file.getInputStream());
+      Reader reader = new InputStreamReader(file.getInputStream());
       records = Builder.create(CSVFormat.DEFAULT)
           .setHeader()
           .setSkipHeaderRecord(true)
@@ -65,24 +64,34 @@ public class CSVServiceImpl implements CSVService {
   @Override
   public RecordDto getRecordById(String recordId) {
 
-    Optional<Record> optionalRecord = csvRepository.findById(recordId);
-    if (optionalRecord.isPresent()) {
-      Record record = optionalRecord.get();
-      return modelMapper.map(record, RecordDto.class);
+    try {
+      Optional<Record> optionalRecord = csvRepository.findById(recordId);
+      if (optionalRecord.isPresent()) {
+        Record record = optionalRecord.get();
+        return modelMapper.map(record, RecordDto.class);
+      }
+      throw new ClientRequestException("Invalid recordId");
+    } catch (DataAccessException dEx) {
+      log.error("Requested data might not in expected type", dEx);
+      throw new ClientRequestException("Requested data might not in expected type");
     }
-    throw new ClientRequestException("Invalid recordId");
   }
 
   @Override
   public List<RecordDto> getAllRecords(int limit, int offset) {
-    //TODO implement pageable logic
-    CustomPagealbe paging = new CustomPagealbe(offset, limit);
+    try {
+      //TODO implement pageable logic
+      CustomPagealbe paging = new CustomPagealbe(offset, limit);
 //    Pageable paging = PageRequest.of(offset, limit);
-    Page<Record> records = csvRepository.findAll(paging);
-    List<Record> recordList = StreamSupport.stream(records.spliterator(), false).toList();
+      Page<Record> records = csvRepository.findAll(paging);
+      List<Record> recordList = StreamSupport.stream(records.spliterator(), false).toList();
 //    List<Record> records = csvRepository.findAll();
-    return modelMapper.map(recordList, new TypeToken<List<RecordDto>>() {
-    }.getType());
+      return modelMapper.map(recordList, new TypeToken<List<RecordDto>>() {
+      }.getType());
+    } catch (DataAccessException dEx){
+      log.error("Requested data might not in expected type", dEx);
+      throw new ClientRequestException("Requested data might not in expected type");
+    }
   }
 
   @Override
