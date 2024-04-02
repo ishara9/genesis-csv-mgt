@@ -23,17 +23,17 @@ import java.util.List;
 @AllArgsConstructor
 public class CSVController {
 
-  private final CSVService csvServiceUtil;
+  private final CSVService csvService;
 
   @PostMapping()
   public ResponseEntity<Void> uploadFile(@RequestParam("file") MultipartFile file) {
-    csvServiceUtil.upload(file);
+    csvService.upload(file);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
   @GetMapping(path = "records/{recordId}")
     ResponseEntity<RecordDto> getRecordById(@PathVariable String recordId) {
-    RecordDto record = csvServiceUtil.getRecordById(recordId);
+    RecordDto record = csvService.getRecordById(recordId);
     return new ResponseEntity<>(record, HttpStatus.OK);
   }
 
@@ -53,19 +53,19 @@ public class CSVController {
       offset = 0;
     }
 
-    List<RecordDto> records = csvServiceUtil.getAllRecords(limit, offset);
+    List<RecordDto> records = csvService.getAllRecords(limit, offset);
     return new ResponseEntity<>(records, HttpStatus.OK);
   }
 
   @DeleteMapping(path = "records/{recordId}")
   ResponseEntity<Void> deleteRecordById(@PathVariable String recordId) {
-    csvServiceUtil.deleteRecordById(recordId);
+    csvService.deleteRecordById(recordId);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @DeleteMapping(path = "records")
   ResponseEntity<Void> deleteAllRecords() {
-    csvServiceUtil.deleteAllRecords();
+    csvService.deleteAllRecords();
     return new ResponseEntity<>(HttpStatus.OK);
   }
 }
