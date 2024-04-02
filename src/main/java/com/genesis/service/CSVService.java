@@ -1,9 +1,8 @@
 package com.genesis.service;
 
+import com.genesis.dto.PaginatedRecordsDto;
 import com.genesis.dto.RecordDto;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 /**
  * This interface defines methods to handle CSV records.
@@ -13,14 +12,14 @@ public interface CSVService {
   /**
    * Upload csv file.
    *
-   * @param file        CSV file.
+   * @param file CSV file.
    */
   void upload(MultipartFile file);
 
   /**
    * Fetch single record by id.
    *
-   * @param recordId    Unique record code.
+   * @param recordId Unique record code.
    * @return
    */
   RecordDto getRecordById(String recordId);
@@ -28,16 +27,16 @@ public interface CSVService {
   /**
    * Get all records with pagination.
    *
-   * @param limit       Records to return.
-   * @param offset      Records to skip.
-   * @return
+   * @param limit  Records to return.
+   * @param offset Records to skip.
+   * @return paginated records dto
    */
-  List<RecordDto> getAllRecords(int limit, int offset);
+  PaginatedRecordsDto<RecordDto> getAllRecords(int limit, int offset);
 
   /**
    * Delete single record by id.
    *
-   * @param id          Unique record code.
+   * @param id Unique record code.
    */
   void deleteRecordById(String id);
 

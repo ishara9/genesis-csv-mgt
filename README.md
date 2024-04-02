@@ -1,86 +1,80 @@
-# Genesis Rest APIs
+## Genesis Rest APIs
 
-### Switching property files
-    * --spring.profiles.active=dev
- 
-### Swagger
-    
-     http://localhost:8080/genesis/swagger-ui.html
+### Setup
 
-### Actuator
+1. (pre-check) Project has been configured in Java 17 (Add Java env variables)
+2. Update gradle dependencies
+3. Go to GenesisApplication and run application
+4. or from root directory run `./gradlew bootRun`
 
-    http://localhost:8080/genesis/actuator
+### Genesis Application Functions
 
-### H2 Database console
-
-    http://localhost:8080/genesis/h2
-
-## Run application
-
-    mvn spring-boot:run
-
-### Reference Documentation
-
-## Add records
+### Add records
 
 ### request
 
-`POST /genesis/api/v1/csv`
+`POST /api/v1/csv`
 
-    http://localhost:8080/genesis/api/v1/csv
+    http://localhost:8080/api/v1/csv
 
     upload CSV file with 
     [key: "file", value: exercise.csv]
-![img.png](img.png)
 
-sample payload: 
-![img_1.png](img_1.png)
+Sample payload CSV
+```
+code,source,displayValue,longDescription,fromDate,toDate,sortingPriority,codeListCode
+code1,source1,displayValue1,longDescription1,01-01-2024,01-02-2024,1,codeListCode1
+code2,source2,displayValue2,longDescription2,01-02-2024,01-03-2024,2,codeListCode2
+```
+
+![img.png](img.png)
 
 |  code  |  source  |  displayValue  |  longDescription  |  fromDate   |   toDate    | sortingPriority |  codeListCode  |
 |:------:|:--------:|:--------------:|:-----------------:|:-----------:|:-----------:|:---------------:|:--------------:|
 | code1  | source1  | displayValue1  | longDescription1  | 01-01-2024  | 01-02-2024  |       1         | codeListCode1  |
 | code2  | source2  | displayValue2  | longDescription2  | 01-02-2024  | 01-03-2024  |        2        | codeListCode2  |
 
-```
-CSV:
-code,source,displayValue,longDescription,fromDate,toDate,sortingPriority,codeListCode
-code1,source1,displayValue1,longDescription1,01-01-2024,01-02-2024,1,codeListCode1
-code2,source2,displayValue2,longDescription2,01-02-2024,01-03-2024,2,codeListCode2
-```
+### Get all records
+
+`GET /api/v1/csv/records`
+
+`GET /api/v1/csv/records?limit=1&offset=1`
+
+    curl -i -H 'Accept: application/json' http://localhost:8080/api/v1/csv/records
+
+### Get record by code
+
+`GET /records/{code}`
+
+    curl -i -H 'Accept: application/json' http://localhost:8080/api/v1/csv/records/1
+
+### Delete by record id
+
+`DELETE /records/{recordId}`
+
+    http://localhost:8080/api/v1/csv/records/1
+
+### Delete all
+
+`DELETE /records`
+
+    http://localhost:8080/api/v1/csv/records
 
 
-## Fetch by code
+## Additional information
 
-### request
+### Switching property files
+    * --spring.profiles.active=dev
 
-`GET /genesis/records/{code}`
+### Swagger
 
-    curl -i -H 'Accept: application/json' http://localhost:8080/genesis/api/v1/csv/records/1
+     http://localhost:8080/swagger-ui.html
 
-## Fetch all data
+### Actuator
 
-### request
+    http://localhost:8080/actuator
 
-`GET genesis/api/v1/csv/records`
+### H2 Database console
 
-    curl -i -H 'Accept: application/json' http://localhost:8080/genesis/api/v1/csv/records
-
-## Delete by record id
-
-### request 
-
-`DELETE /genesis/records/{recordId}`
-
-    http://localhost:8080/genesis/api/v1/csv/records/1
-
-## Delete all
-
-### request
-
-`DELETE /genesis/records`
-
-    http://localhost:8080/genesis/api/v1/csv/records
-
-
-
+    http://localhost:8080/h2
 

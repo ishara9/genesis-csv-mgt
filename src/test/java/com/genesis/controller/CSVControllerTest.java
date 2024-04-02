@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.genesis.dto.PaginatedRecordsDto;
 import com.genesis.dto.RecordDto;
 import com.genesis.service.impl.CSVServiceImpl;
 import java.io.FileInputStream;
@@ -18,6 +19,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -71,13 +76,15 @@ class CSVControllerTest {
     RecordDto record = buildDummyRecord(recordId);
     List<RecordDto> records = new ArrayList<>();
     records.add(record);
-    given(csvService.getAllRecords(anyInt(), anyInt())).willReturn(records);
+    Page<RecordDto> pageDto = new PageImpl<>(records, PageRequest.ofSize(1), 1);
+    PaginatedRecordsDto<RecordDto> paginatedRecordsDto = new PaginatedRecordsDto<>(pageDto);
+    paginatedRecordsDto.setContent(records);
+    given(csvService.getAllRecords(anyInt(), anyInt())).willReturn(paginatedRecordsDto);
 
-    mvc.perform((MockMvcRequestBuilders.get("/api/v1/csv/records")))
-        .andExpect(status().isOk())
+    mvc.perform((MockMvcRequestBuilders.get("/api/v1/csv/records"))).andExpect(status().isOk())
+        .andExpect(jsonPath("$").isNotEmpty())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$").isArray())
-        .andExpect(jsonPath("$[0].code").value(recordId));
+        .andExpect(jsonPath("$.content[0].code").value(recordId));
   }
 
   private RecordDto buildDummyRecord(String id) {

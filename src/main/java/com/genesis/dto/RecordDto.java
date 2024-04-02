@@ -22,4 +22,5 @@ public class RecordDto {
     private Date toDate;
     private Long sortingPriority;
     private String codeListCode;
+
 }

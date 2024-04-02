@@ -10,5 +10,4 @@ public class GenesisException extends RuntimeException {
     super(message, cause);
   }
 
-
 }

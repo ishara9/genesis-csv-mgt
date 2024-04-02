@@ -1,5 +1,6 @@
 package com.genesis.service.impl;
 
+import com.genesis.dto.PaginatedRecordsDto;
 import com.genesis.dto.RecordDto;
 import com.genesis.exception.ClientRequestException;
 import com.genesis.exception.ServerRequestException;
@@ -8,17 +9,6 @@ import com.genesis.repository.CSVRepository;
 import com.genesis.service.CSVService;
 import com.genesis.util.CustomPagealbe;
 import com.genesis.util.RecordMapper;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVFormat.Builder;
-import org.apache.commons.csv.CSVRecord;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -26,6 +16,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVFormat.Builder;
+import org.apache.commons.csv.CSVRecord;
+import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j
@@ -34,12 +33,12 @@ public class CSVServiceImpl implements CSVService {
   private final CSVRepository csvRepository;
   private final ModelMapper modelMapper;
 
-    public CSVServiceImpl(CSVRepository csvRepository, ModelMapper modelMapper) {
-        this.csvRepository = csvRepository;
-        this.modelMapper = modelMapper;
-    }
+  public CSVServiceImpl(CSVRepository csvRepository, ModelMapper modelMapper) {
+    this.csvRepository = csvRepository;
+    this.modelMapper = modelMapper;
+  }
 
-    @Override
+  @Override
   public void upload(MultipartFile file) {
 
     Reader reader = null;
@@ -54,7 +53,6 @@ public class CSVServiceImpl implements CSVService {
     } catch (IOException e) {
       throw new ClientRequestException(e.getMessage(), e);
     }
-
 
     List<Record> recordList = StreamSupport.stream(records.spliterator(), false)
         .map(RecordMapper::map)
@@ -78,15 +76,11 @@ public class CSVServiceImpl implements CSVService {
   }
 
   @Override
-  public List<RecordDto> getAllRecords(int limit, int offset) {
-    //TODO implement pageable logic
+  public PaginatedRecordsDto<RecordDto> getAllRecords(int limit, int offset) {
     CustomPagealbe paging = new CustomPagealbe(offset, limit);
-//    Pageable paging = PageRequest.of(offset, limit);
-    Page<Record> records = csvRepository.findAll(paging);
-    List<Record> recordList = StreamSupport.stream(records.spliterator(), false).toList();
-//    List<Record> records = csvRepository.findAll();
-    return modelMapper.map(recordList, new TypeToken<List<RecordDto>>() {
-    }.getType());
+    Page<RecordDto> records = csvRepository.findAll(paging)
+        .map(record -> modelMapper.map(record, RecordDto.class));
+    return new PaginatedRecordsDto<>(records);
   }
 
   @Override
