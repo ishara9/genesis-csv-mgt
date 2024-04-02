@@ -8,14 +8,6 @@ import com.genesis.repository.CSVRepository;
 import com.genesis.service.CSVService;
 import com.genesis.util.CustomPagealbe;
 import com.genesis.util.RecordMapper;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVFormat.Builder;
@@ -27,15 +19,27 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 @Service
 @Slf4j
-@AllArgsConstructor
 public class CSVServiceImpl implements CSVService {
 
   private final CSVRepository csvRepository;
   private final ModelMapper modelMapper;
 
-  @Override
+    public CSVServiceImpl(CSVRepository csvRepository, ModelMapper modelMapper) {
+        this.csvRepository = csvRepository;
+        this.modelMapper = modelMapper;
+    }
+
+    @Override
   public void upload(MultipartFile file) {
 
     Reader reader = null;
