@@ -34,8 +34,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.multipart.MultipartFile;
 
-@ContextConfiguration(classes = {SecurityConfig.class, CSVController.class, CSVService.class,
-    CSVRepository.class, ModelMapper.class})
+@ContextConfiguration(classes = {SecurityConfig.class, CSVController.class})
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(value = CSVController.class)
 class CSVControllerTest {
