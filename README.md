@@ -27,7 +27,7 @@ code1,source1,displayValue1,longDescription1,01-01-2024,01-02-2024,1,codeListCod
 code2,source2,displayValue2,longDescription2,01-02-2024,01-03-2024,2,codeListCode2
 ```
 
-![img.png](img.png)
+![img.png](meta/img.png)
 
 |  code  |  source  |  displayValue  |  longDescription  |  fromDate   |   toDate    | sortingPriority |  codeListCode  |
 |:------:|:--------:|:--------------:|:-----------------:|:-----------:|:-----------:|:---------------:|:--------------:|
@@ -60,6 +60,20 @@ code2,source2,displayValue2,longDescription2,01-02-2024,01-03-2024,2,codeListCod
 
     http://localhost:8080/api/v1/csv/records
 
+## Security Config
+
+### Post requests
+
+- POST Requests requires to set X-XSRF-TOKEN in header
+- XSRF-TOKEN can be fetched from response cookies, 
+this cookie can be readable via Javascript since HTTP-ONLY set to false
+
+### Postman script to optimize XSRF-TOKEN to be fetched from cookie
+```
+var xsrfCookie = postman.getResponseCookie("XSRF-TOKEN");
+postman.setEnvironmentVariable("xsrf-token", xsrfCookie.value);
+```
+![img_2.png](meta/img_2.png)
 
 ## Additional information
 
