@@ -35,6 +35,36 @@ code2,source2,displayValue2,longDescription2,01-02-2024,01-03-2024,2,codeListCod
 | code1  | source1  | displayValue1  | longDescription1  | 01-01-2024  | 01-02-2024  |       1         | codeListCode1  |
 | code2  | source2  | displayValue2  | longDescription2  | 01-02-2024  | 01-03-2024  |        2        | codeListCode2  |
 
+### Authentication 
+
+### Register
+
+`POST /api/v1/auth/register`
+
+```
+{
+    "firstname": "name",
+    "lastname": "lname",
+    "email": "name@mail.com",
+    "password":"123"
+}
+```
+
+### Authenticate
+
+`POST /api/v1/auth/authenticate`
+
+```
+{
+    "email": "name@mail.com",
+    "password":"123"
+}
+```
+
+### for all subsequent calls
+
+- Use `Bearer token` from response jwt token
+
 ### Get all records
 
 `GET /api/v1/csv/records`
