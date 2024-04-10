@@ -7,11 +7,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.genesis.config.SecurityConfig;
+import com.genesis.security.config.SecurityConfig;
 import com.genesis.dto.PaginatedRecordsDto;
 import com.genesis.dto.RecordDto;
-import com.genesis.repository.CSVRepository;
-import com.genesis.service.CSVService;
 import com.genesis.service.impl.CSVServiceImpl;
 import java.io.FileInputStream;
 import java.sql.Date;
@@ -19,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
