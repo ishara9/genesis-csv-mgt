@@ -23,25 +23,3 @@ server:
         include-message: always
         include-stacktrace: on_param
     port: 8080
-spring:
-    datasource:
-        driverClassName: org.h2.Driver
-        password: ''
-        url: jdbc:h2:mem:testdb
-        username: sa
-    h2:
-        console:
-            enabled: true
-            path: /h2
-    jpa:
-        database-platform: org.hibernate.dialect.H2Dialect
-        show-sql: true
-
-    security:
-        oauth2:
-            client:
-                registration:
-                    github:
-                        client-id: e3a3e7152969f160b545
-                        client-secret: 7537e9b3d0c0d5fa0a2f7a15b477da8ef1bc943b
-
