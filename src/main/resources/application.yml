@@ -1,0 +1,24 @@
+application:
+    title: Meds
+    version: 1.0.0
+logging:
+    level:
+        org:
+            springframework: INFO
+    pattern:
+        console: '%d{yyyy-MM-dd HH:mm:ss} - %msg%n'
+management:
+    endpoints:
+        jmx:
+            exposure:
+                include: health,info,env,beans
+        web:
+            exposure:
+                include: health,info,env,beans
+server:
+    error:
+        include-binding-errors: always
+        include-message: always
+        include-stacktrace: on_param
+    port: 8080
+

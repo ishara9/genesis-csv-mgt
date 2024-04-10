@@ -4,6 +4,7 @@
 
 1. (pre-check) Project has been configured in Java 17 (Add Java env variables)
 2. Update gradle dependencies
+3. Run postgres db `docker-compose -f .\docker-compose.yml up -d`
 3. Go to GenesisApplication and run application
 4. or from root directory run `./gradlew bootRun`
 
