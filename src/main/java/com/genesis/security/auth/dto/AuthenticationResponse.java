@@ -1,4 +1,4 @@
-package com.genesis.security.auth;
+package com.genesis.security.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
