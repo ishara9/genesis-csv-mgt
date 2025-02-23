@@ -9,6 +9,15 @@ import com.genesis.repository.CSVRepository;
 import com.genesis.service.CSVService;
 import com.genesis.util.CustomPagealbe;
 import com.genesis.util.RecordMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
+import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -16,15 +25,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVFormat.Builder;
-import org.apache.commons.csv.CSVRecord;
-import org.modelmapper.ModelMapper;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j
@@ -45,7 +45,7 @@ public class CSVServiceImpl implements CSVService {
     Iterable<CSVRecord> records;
     try {
       reader = new InputStreamReader(file.getInputStream());
-      records = Builder.create(CSVFormat.DEFAULT)
+      records = CSVFormat.Builder.create(CSVFormat.DEFAULT)
           .setHeader()
           .setSkipHeaderRecord(true)
           .build()
