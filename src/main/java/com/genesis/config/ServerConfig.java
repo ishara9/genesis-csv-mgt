@@ -1,4 +1,4 @@
-package com.genesis;
+package com.genesis.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;

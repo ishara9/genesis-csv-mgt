@@ -9,6 +9,7 @@ import com.genesis.repository.CSVRepository;
 import com.genesis.service.CSVService;
 import com.genesis.util.CustomPagealbe;
 import com.genesis.util.RecordMapper;
+import com.sun.source.tree.Tree;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -21,8 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -54,6 +54,9 @@ public class CSVServiceImpl implements CSVService {
       throw new ClientRequestException(e.getMessage(), e);
     }
 
+    Vector<String> strings = new Vector<>();
+    new ArrayList<>().ensureCapacity(100);
+    strings.add("hi");
     List<Record> recordList = StreamSupport.stream(records.spliterator(), false)
         .map(RecordMapper::map)
         .collect(Collectors.toList());
@@ -61,7 +64,24 @@ public class CSVServiceImpl implements CSVService {
       csvRepository.saveAll(recordList);
     } catch (DataAccessException dEx) {
       throw new ServerRequestException("Error while saving data", dEx);
+    } catch (RuntimeException e) {
+      throw new ClientRequestException(e.getMessage(), e);
     }
+
+    new ArrayList<>();
+    new LinkedList<>();
+    new Vector<>();
+
+    new HashSet<>();
+    new LinkedHashSet<>();
+    new TreeSet<>();
+
+    HashMap<Integer, Object> map = new HashMap<>();
+    map.put(7,"lol");
+    new LinkedHashMap<>();
+    new TreeMap<>();
+
+
   }
 
   @Override
