@@ -6,6 +6,7 @@
 2. Update gradle dependencies
 3. Go to GenesisApplication and run application
 4. or from root directory run `./gradlew bootRun`
+5. Run http://localhost:8080/swagger-ui/index.html to see available APIs
 
 ### Genesis Application Functions
 

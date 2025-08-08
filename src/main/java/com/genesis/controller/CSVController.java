@@ -4,10 +4,14 @@ import com.genesis.dto.PaginatedRecordsDto;
 import com.genesis.dto.RecordDto;
 import com.genesis.service.CSVService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +21,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @RequestMapping(path = "api/v1/csv")
 @RestController
@@ -33,12 +40,21 @@ public class CSVController {
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
-  @Operation(summary = "Upload a CSV file", description = "Uploads a CSV file and stores its records.")
-  @PostMapping()
-  public ResponseEntity<Void> uploadFile(@RequestParam("file") MultipartFile file) {
+  @Operation(summary = "Upload a file")
+  @ApiResponses(value = {
+          @ApiResponse(responseCode = "200", description = "File uploaded successfully")
+  })
+  @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<String> upload(
+          @Parameter(description = "File to upload", required = true,
+                  content = @Content(mediaType = MediaType.APPLICATION_OCTET_STREAM_VALUE,
+                          schema = @Schema(type = "string", format = "binary")))
+          @RequestPart("file") MultipartFile file) {
+
     csvService.upload(file);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
+
 
   @Operation(summary = "Get a record by ID", description = "Retrieves a single record by its unique ID.")
   @GetMapping(path = "records/{recordId}")

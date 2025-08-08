@@ -20,7 +20,7 @@ public class ServerConfig {
   CommandLineRunner commandLineRunner() {
     return args -> {
       //code executed when application starts
-      log.info("Well-done app run successfully!");
+      log.info("Genesis CSV Management application started successfully.");
     };
   }
 
