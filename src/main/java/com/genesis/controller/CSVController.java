@@ -3,6 +3,8 @@ package com.genesis.controller;
 import com.genesis.dto.PaginatedRecordsDto;
 import com.genesis.dto.RecordDto;
 import com.genesis.service.CSVService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @Slf4j
 @AllArgsConstructor
+@Tag(name = "CSV Management", description = "Endpoints for managing CSV records")
 public class CSVController {
 
   private final CSVService csvService;
@@ -30,20 +33,23 @@ public class CSVController {
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
+  @Operation(summary = "Upload a CSV file", description = "Uploads a CSV file and stores its records.")
   @PostMapping()
   public ResponseEntity<Void> uploadFile(@RequestParam("file") MultipartFile file) {
     csvService.upload(file);
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
 
+  @Operation(summary = "Get a record by ID", description = "Retrieves a single record by its unique ID.")
   @GetMapping(path = "records/{recordId}")
   ResponseEntity<RecordDto> getRecordById(@PathVariable String recordId) {
     RecordDto record = csvService.getRecordById(recordId);
     return new ResponseEntity<>(record, HttpStatus.OK);
   }
 
+  @Operation(summary = "Get all records", description = "Retrieves paginated records from the CSV file.")
   @GetMapping(path = "records")
-  ResponseEntity<PaginatedRecordsDto> getAllRecords(
+  ResponseEntity<PaginatedRecordsDto<RecordDto>> getAllRecords(
       @RequestParam(value = "limit", required = false) Integer limit,
       @RequestParam(value = "offset", required = false) Integer offset) {
     // Sanitize pagination params.
@@ -62,12 +68,14 @@ public class CSVController {
     return new ResponseEntity<>(records, HttpStatus.OK);
   }
 
+  @Operation(summary = "Delete a record by ID", description = "Deletes a single record by its unique ID.")
   @DeleteMapping(path = "records/{recordId}")
   ResponseEntity<Void> deleteRecordById(@PathVariable String recordId) {
     csvService.deleteRecordById(recordId);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  @Operation(summary = "Delete all records", description = "Deletes all records from the CSV file.")
   @DeleteMapping(path = "records")
   ResponseEntity<Void> deleteAllRecords() {
     csvService.deleteAllRecords();
